@@ -1,0 +1,219 @@
+{% load static %}<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}آموزشگاه هوش نو{% endblock %}</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<canvas id="particles"></canvas>
+<nav class="navbar navbar-expand-lg sticky-top glass-nav">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'core:home' %}">🚀 {{ site_config.site_name|default:'آموزشگاه هوش نو' }}</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="منو">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="{% url 'core:home' %}">خانه</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'courses:list' %}">دوره‌ها</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'core:about' %}">درباره ما</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'core:faq' %}">سوالات متداول</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'core:contact' %}">تماس با ما</a></li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'accounts:dashboard' %}">پنل من ({{ user.username }})</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'accounts:logout' %}">خروج</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'accounts:login' %}">ورود</a></li>
+          <li class="nav-item"><a class="btn btn-coral btn-sm mt-1" href="{% url 'accounts:register' %}">ثبت‌نام</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+{% if messages %}<div class="container mt-3">{% for m in messages %}<div class="alert alert-{{ m.tags|default:'info' }}">{{ m }}</div>{% endfor %}</div>{% endif %}
+<main>
+<div class="container">
+  <div class="row">
+    <!-- ستون محتوای اصلی -->
+    <div class="col-lg-9 order-lg-1">
+      {% block content %}{% endblock %}
+    </div>
+    <!-- سایدبار چپ: لینک‌دونی + اخبار هوش مصنوعی -->
+    <aside class="col-lg-3 order-lg-2 sidebar-col">
+      <!-- ===== لینک‌دونی ===== -->
+      <div class="side-widget">
+        <h6 class="side-widget-title">🔗 لینک‌دونی</h6>
+        <div class="linkdoni-group">🤖 رباتیک</div>
+        <ul class="linkdoni-list">
+          <li><a href="https://www.lego.com/education" target="_blank" rel="noopener">🎓 LEGO Education</a></li>
+          <li><a href="https://firstinspires.org" target="_blank" rel="noopener">🏆 FIRST Robotics</a></li>
+          <li><a href="https://www.robotshop.com" target="_blank" rel="noopener">🛒 RobotShop</a></li>
+          <li><a href="https://www.arduino.cc" target="_blank" rel="noopener">⚡ Arduino</a></li>
+        </ul>
+        <div class="linkdoni-group">🧠 هوش مصنوعی</div>
+        <ul class="linkdoni-list">
+          <li><a href="https://chat.openai.com" target="_blank" rel="noopener">💬 ChatGPT</a></li>
+          <li><a href="https://gemini.google.com" target="_blank" rel="noopener">✨ Google Gemini</a></li>
+          <li><a href="https://huggingface.co" target="_blank" rel="noopener">🤗 Hugging Face</a></li>
+          <li><a href="https://www.deepmind.google" target="_blank" rel="noopener">🔬 DeepMind</a></li>
+        </ul>
+        <div class="linkdoni-group">💻 برنامه‌نویسی</div>
+        <ul class="linkdoni-list">
+          <li><a href="https://github.com" target="_blank" rel="noopener">🐙 GitHub</a></li>
+          <li><a href="https://stackoverflow.com" target="_blank" rel="noopener">📖 Stack Overflow</a></li>
+          <li><a href="https://www.w3schools.com" target="_blank" rel="noopener">🌐 W3Schools</a></li>
+          <li><a href="https://scratch.mit.edu" target="_blank" rel="noopener">🐱 Scratch</a></li>
+          <li><a href="https://quera.org" target="_blank" rel="noopener">🇮🇷 کوئرا</a></li>
+        </ul>
+      </div>
+      <!-- ===== اخبار هوش مصنوعی ===== -->
+      <div class="side-widget">
+        <h6 class="side-widget-title"><span class="live-dot"></span> اخبار هوش مصنوعی</h6>
+        <div class="news-ticker" id="newsTicker">
+          <div class="news-item"><span class="news-src">📡 MIT Technology Review</span>
+            <p class="news-txt">مدل‌های چندوجهی جدید، درک تصویر و صدا را به سطح تازه‌ای رساندند.</p><span class="news-date">امروز</span></div>
+          <div class="news-item"><span class="news-src">📡 OpenAI Blog</span>
+            <p class="news-txt">ابزارهای ایجنت‌محور جدید برای خودکارسازی کارهای روزمره معرفی شد.</p><span class="news-date">۱ روز پیش</span></div>
+          <div class="news-item"><span class="news-src">📡 Google DeepMind</span>
+            <p class="news-txt">پیشرفت تازه در هوش مصنوعی علمی؛ کشف مواد جدید با یادگیری ماشین.</p><span class="news-date">۲ روز پیش</span></div>
+          <div class="news-item"><span class="news-src">📡 IEEE Spectrum</span>
+            <p class="news-txt">ربات‌های انسان‌نما با هوش مصنوعی، کارخانه‌های هوشمند را متحول می‌کنند.</p><span class="news-date">۳ روز پیش</span></div>
+          <div class="news-item"><span class="news-src">📡 Wired AI</span>
+            <p class="news-txt">آموزش برنامه‌نویسی با دستیارهای هوشمند، سرعت یادگیری را دوبرابر کرد.</p><span class="news-date">۴ روز پیش</span></div>
+          <div class="news-item"><span class="news-src">📡 TechCrunch</span>
+            <p class="news-txt">سرمایه‌گذاری سنگین روی استارتاپ‌های آموزش هوش مصنوعی به کودکان.</p><span class="news-date">۵ روز پیش</span></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+</main>
+
+<!-- ===== فوتر موجی حرفه‌ای ===== -->
+<footer class="footer-wrap mt-5">
+  <!-- موج + سیلوئت شهر/درخت/بالن به سبک Sample-Footer-5 -->
+  <svg class="footer-wave" viewBox="0 0 1440 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="waveGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#b78ff5"/>
+        <stop offset=".55" stop-color="#7b4fd6"/>
+        <stop offset="1" stop-color="#2b1a5e"/>
+      </linearGradient>
+      <linearGradient id="silGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#e39af0"/>
+        <stop offset="1" stop-color="#5a35a8"/>
+      </linearGradient>
+    </defs>
+    <!-- سیلوئت عناصر (ساختمان‌ها، درخت‌ها، چرخ‌وفلک، بالن) -->
+    <g fill="url(#silGrad)" class="footer-deco">
+      <!-- درخت‌ها چپ -->
+      <g><circle cx="60" cy="86" r="12"/><rect x="58" y="94" width="4" height="18"/></g>
+      <g><circle cx="92" cy="94" r="9"/><rect x="90" y="100" width="4" height="14"/></g>
+      <!-- چرخ‌وفلک -->
+      <g><circle cx="170" cy="84" r="20" fill="none" stroke="url(#silGrad)" stroke-width="3"/>
+        <circle cx="170" cy="84" r="3"/><path d="M170 84 L170 64 M170 84 L188 74 M170 84 L152 74 M170 84 L188 94 M170 84 L152 94" stroke="url(#silGrad)" stroke-width="2"/>
+        <rect x="164" y="104" width="12" height="8"/></g>
+      <!-- ساختمان‌های مرکزی -->
+      <rect x="330" y="70" width="26" height="44" rx="2"/>
+      <rect x="362" y="48" width="34" height="66" rx="2"/>
+      <rect x="402" y="82" width="22" height="32" rx="2"/>
+      <rect x="430" y="60" width="30" height="54" rx="2"/>
+      <rect x="466" y="76" width="26" height="38" rx="2"/>
+      <rect x="498" y="56" width="20" height="58" rx="2"/>
+      <!-- بالن -->
+      <g class="balloon"><circle cx="570" cy="52" r="14" fill="#f3a8ec"/>
+        <path d="M564 62 L570 76 L576 62 Z" fill="#c77de0"/>
+        <rect x="566" y="76" width="8" height="6" rx="1" fill="#c77de0"/></g>
+      <g class="balloon2"><circle cx="1105" cy="46" r="11" fill="#f3a8ec"/>
+        <path d="M1100 54 L1105 66 L1110 54 Z" fill="#c77de0"/>
+        <rect x="1102" y="66" width="6" height="5" rx="1" fill="#c77de0"/></g>
+      <!-- ساختمان‌های راست -->
+      <rect x="940" y="72" width="24" height="42" rx="2"/>
+      <rect x="970" y="54" width="30" height="60" rx="2"/>
+      <rect x="1006" y="80" width="20" height="34" rx="2"/>
+      <rect x="1160" y="66" width="28" height="48" rx="2"/>
+      <rect x="1194" y="82" width="22" height="32" rx="2"/>
+      <!-- درخت‌های راست -->
+      <g><circle cx="1360" cy="88" r="12"/><rect x="1358" y="96" width="4" height="16"/></g>
+      <g><circle cx="1392" cy="96" r="9"/><rect x="1390" y="102" width="4" height="12"/></g>
+    </g>
+    <!-- موج تپه‌ای -->
+    <path fill="url(#waveGrad)" d="M0,120 C120,100 240,86 380,98 C520,110 620,124 760,116 C900,108 1000,88 1140,94 C1280,100 1360,114 1440,108 L1440,140 L0,140 Z"/>
+  </svg>
+
+  <div class="footer-dark">
+    <div class="container py-4">
+      <div class="row gy-4">
+        <!-- درباره -->
+        <div class="col-lg-4 col-md-6">
+          <h6 class="footer-heading">🚀 {{ site_config.site_name|default:'آموزشگاه هوش نو' }}</h6>
+          <p class="footer-about">{{ site_config.tagline|default:'آینده را با خلاقیت بساز!' }}</p>
+          <p class="footer-about mb-0">آموزش تخصصی رباتیک، برنامه‌نویسی و هوش مصنوعی برای کودکان و نوجوانان با بهترین اساتید و جدیدترین متدهای آموزشی.</p>
+        </div>
+        <!-- دسترسی سریع -->
+        <div class="col-lg-2 col-md-6 col-6">
+          <h6 class="footer-heading">دسترسی سریع</h6>
+          <ul class="footer-links">
+            <li><a href="{% url 'core:home' %}">خانه</a></li>
+            <li><a href="{% url 'courses:list' %}">دوره‌ها</a></li>
+            <li><a href="{% url 'core:about' %}">درباره ما</a></li>
+            <li><a href="{% url 'core:faq' %}">سوالات متداول</a></li>
+            <li><a href="{% url 'core:contact' %}">تماس با ما</a></li>
+          </ul>
+        </div>
+        <!-- اطلاعات تماس -->
+        <div class="col-lg-3 col-md-6 col-6">
+          <h6 class="footer-heading">اطلاعات تماس</h6>
+          <ul class="footer-links">
+            <li><i class="bi bi-geo-alt me-1"></i> {{ site_config.address|default:'تهران' }}</li>
+            <li><i class="bi bi-telephone me-1"></i> <a href="tel:{{ site_config.phone|default:'02112345678' }}">{{ site_config.phone|default:'۰۲۱-۱۲۳۴۵۶۷۸' }}</a></li>
+            <li><i class="bi bi-envelope me-1"></i> <a href="mailto:{{ site_config.email|default:'hello@hooshno.academy' }}">{{ site_config.email|default:'hello@hooshno.academy' }}</a></li>
+          </ul>
+        </div>
+        <!-- ما را دنبال کنید -->
+        <div class="col-lg-3 col-md-6">
+          <h6 class="footer-heading">ما را دنبال کنید</h6>
+          <div class="social-row justify-content-lg-start justify-content-center">
+            <a class="social-btn social-telegram" href="https://t.me/hooshnoo" target="_blank" rel="noopener" title="تلگرام" aria-label="تلگرام"><i class="bi bi-telegram"></i></a>
+            <a class="social-btn social-whatsapp" href="https://wa.me/989123456789" target="_blank" rel="noopener" title="واتس‌اپ" aria-label="واتس‌اپ"><i class="bi bi-whatsapp"></i></a>
+            <a class="social-btn social-instagram" href="https://instagram.com/hooshnoo" target="_blank" rel="noopener" title="اینستاگرام" aria-label="اینستاگرام"><i class="bi bi-instagram"></i></a>
+            <a class="social-btn social-youtube" href="https://youtube.com/@hooshnoo" target="_blank" rel="noopener" title="یوتیوب" aria-label="یوتیوب"><i class="bi bi-youtube"></i></a>
+            <a class="social-btn social-linkedin" href="https://linkedin.com/company/hooshnoo" target="_blank" rel="noopener" title="لینکدین" aria-label="لینکدین"><i class="bi bi-linkedin"></i></a>
+            <a class="social-btn social-aparat" href="https://aparat.com/hooshnoo" target="_blank" rel="noopener" title="آپارات" aria-label="آپارات">
+              <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-3.2 5.1c1 0 1.8.8 1.8 1.8s-.8 1.8-1.8 1.8S7 9.9 7 8.9s.8-1.8 1.8-1.8zm6.4 0c1 0 1.8.8 1.8 1.8s-.8 1.8-1.8 1.8-1.8-.8-1.8-1.8.8-1.8 1.8-1.8zM8.9 13h6.2c1 0 1.7.9 1.4 1.8-.5 1.6-2 3.2-4.5 3.2s-4-1.6-4.5-3.2c-.3-.9.4-1.8 1.4-1.8z"/></svg>
+            </a>
+          </div>
+          <p class="footer-about mt-3 mb-0">هر روز پاسخگوی شما هستیم 💜</p>
+        </div>
+      </div>
+      <div class="footer-copy text-center">© ۱۴۰۳ آموزشگاه هوش نو — تمامی حقوق محفوظ است.</div>
+    </div>
+  </div>
+</footer>
+<!-- مودال مشاوره -->
+<div class="modal fade" id="consultModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered"><div class="modal-content pastel-modal">
+    <div class="modal-header border-0"><h5 class="modal-title">درخواست مشاوره رایگان 💬</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <form method="post" action="{% url 'core:contact' %}">
+      <div class="modal-body">{% csrf_token %}
+        <input class="form-control mb-2" name="name" placeholder="نام و نام خانوادگی" required>
+        <input class="form-control mb-2" name="phone" placeholder="شماره تماس" required>
+        <input class="form-control mb-2" name="course" placeholder="دوره موردعلاقه">
+        <textarea class="form-control" name="message" placeholder="سوال یا توضیح..." rows="2"></textarea>
+      </div>
+      <div class="modal-footer border-0"><button class="btn btn-coral">ارسال درخواست</button></div>
+    </form>
+  </div></div>
+</div>
+<button id="consultBtn" class="btn btn-coral consult-fab" title="مشاوره رایگان">💬</button>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
+{% block scripts %}{% endblock %}
+</body></html>

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}تماس با ما | هوش نو{% endblock %}
+{% block content %}
+<section class="container py-5">
+  <h1 class="section-title text-center mb-4">تماس با ما 📬</h1>
+  <div class="row justify-content-center"><div class="col-lg-6">
+    <form method="post" class="card pastel-modal p-4">{% csrf_token %}
+      <input class="form-control mb-2" name="name" placeholder="نام شما" required>
+      <input class="form-control mb-2" name="phone" placeholder="شماره تماس" required>
+      <input class="form-control mb-2" name="course" placeholder="دوره موردعلاقه">
+      <textarea class="form-control mb-2" name="message" rows="3" placeholder="پیام شما"></textarea>
+      <button class="btn btn-coral">ارسال</button>
+    </form>
+    <div class="text-center mt-4 text-muted">
+      <p>📞 {{ site_config.phone|default:'۰۲۱-۱۲۳۴۵۶۷۸' }}</p>
+      <p>✉️ {{ site_config.email|default:'hello@hooshno.academy' }}</p>
+      <p>📍 {{ site_config.address|default:'تهران' }}</p>
+    </div>
+  </div></div>
+</section>
+{% endblock %}

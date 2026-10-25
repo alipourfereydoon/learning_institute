@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}{{ course.title }} | هوش نو{% endblock %}
+{% block content %}
+<section class="container py-5">
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card pastel-modal p-4 mb-4">
+        <span class="badge cat-badge align-self-start">{{ course.category.icon }} {{ course.category.name }}</span>
+        <h1 class="mt-2">{{ course.title }}</h1>
+        <p class="lead text-muted">{{ course.summary }}</p>
+        <p>{{ course.description }}</p>
+        {% if course.syllabus %}
+        <h5 class="mt-4">📖 سرفصل‌ها</h5>
+        <ul class="syllabus">{% for line in course.syllabus.splitlines %}<li>{{ line }}</li>{% endfor %}</ul>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card pastel-modal p-4 sticky-top">
+        <h4 class="price mb-3">{{ course.price }} تومان</h4>
+        <ul class="list-unstyled small">
+          <li>🎯 سطح: {{ course.get_level_display }}</li>
+          <li>⏱ مدت: {{ course.duration }}</li>
+          <li>📍 شیوه: {{ course.get_mode_display }}</li>
+          <li>🎓 بازه سنی: {{ course.age_min }} تا {{ course.age_max }} سال</li>
+          <li>👥 ظرفیت: {{ course.capacity }} نفر</li>
+          <li>👨‍🏫 مدرس: {{ course.instructor }}</li>
+          <li>🧩 پیش‌نیاز: {{ course.prerequisites|default:'ندارد' }}</li>
+          {% if course.start_date %}<li>📅 شروع: {{ course.start_date }}</li>{% endif %}
+        </ul>
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'courses:enroll' course.slug %}">{% csrf_token %}
+          <button class="btn btn-coral w-100">ثبت‌نام در این دوره</button>
+        </form>
+        {% else %}
+        <a href="{% url 'accounts:login' %}" class="btn btn-coral w-100">برای ثبت‌نام وارد شوید</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

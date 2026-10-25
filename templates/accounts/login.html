@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}ورود | هوش نو{% endblock %}
+{% block content %}
+<section class="container py-5"><div class="row justify-content-center"><div class="col-md-5">
+  <div class="card pastel-modal p-4">
+    <h3 class="text-center mb-3">ورود 👋</h3>
+    <form method="post">{% csrf_token %}
+      <input class="form-control mb-2" name="username" placeholder="نام کاربری" required>
+      <input class="form-control mb-3" type="password" name="password" placeholder="رمز عبور" required>
+      <button class="btn btn-coral w-100">ورود</button>
+    </form>
+    <p class="text-center small mt-3">حساب نداری؟ <a href="{% url 'accounts:register' %}">ثبت‌نام کن</a></p>
+  </div>
+</div></div></section>
+{% endblock %}

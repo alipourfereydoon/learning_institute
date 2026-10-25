@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}دوره‌ها | هوش نو{% endblock %}
+{% block content %}
+<section class="container py-5">
+  <h1 class="section-title text-center mb-4">دوره‌های آموزشی 📚</h1>
+  <div class="filter-bar card pastel-modal p-3 mb-4">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-3"><label class="form-label small">جست‌وجو</label><input id="fSearch" class="form-control" placeholder="نام دوره..."></div>
+      <div class="col-md-2"><label class="form-label small">سن</label>
+        <select id="fAge" class="form-select"><option value="">همه</option><option>12</option><option>14</option><option>16</option><option>18</option><option>20</option></select></div>
+      <div class="col-md-2"><label class="form-label small">سطح</label>
+        <select id="fLevel" class="form-select"><option value="">همه</option><option value="beginner">مقدماتی</option><option value="intermediate">متوسط</option><option value="advanced">پیشرفته</option></select></div>
+      <div class="col-md-3"><label class="form-label small">دسته</label>
+        <select id="fCat" class="form-select"><option value="">همه</option>{% for c in categories %}<option value="{{ c.id }}">{{ c.icon }} {{ c.name }}</option>{% endfor %}</select></div>
+      <div class="col-md-2"><button id="fReset" class="btn btn-coral w-100">حذف فیلترها</button></div>
+    </div>
+  </div>
+  <div class="row g-4" id="courseGrid">
+    {% for course in courses %}
+    <div class="col-md-6 col-lg-4 course-item"
+         data-level="{{ course.level }}" data-cat="{{ course.category_id }}"
+         data-agemin="{{ course.age_min }}" data-agemax="{{ course.age_max }}"
+         data-title="{{ course.title }}">
+      <div class="card course-card h-100">
+        <div class="card-body">
+          <span class="badge cat-badge">{{ course.category.icon }} {{ course.category.name }}</span>
+          <h5 class="card-title mt-2">{{ course.title }}</h5>
+          <p class="card-text text-muted">{{ course.summary|truncatechars:110 }}</p>
+          <span class="badge bg-light text-dark">🎓 {{ course.get_level_display }}</span>
+          <span class="badge bg-light text-dark">📍 {{ course.get_mode_display }}</span>
+        </div>
+        <div class="card-footer bg-transparent border-0 d-flex justify-content-between align-items-center">
+          <strong class="price">{{ course.price }} تومان</strong>
+          <a href="{% url 'courses:detail' course.slug %}" class="btn btn-coral btn-sm">ثبت‌نام</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}<p class="text-center text-muted">دوره‌ای یافت نشد.</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}

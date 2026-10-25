@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}پنل من | هوش نو{% endblock %}
+{% block content %}
+<section class="container py-5">
+  <h1 class="section-title mb-4">سلام {{ user.username }} 👋</h1>
+  <h5>دوره‌های من:</h5>
+  <div class="row g-3">
+    {% for e in enrollments %}
+    <div class="col-md-4"><div class="card pastel-modal p-3">
+      <strong>{{ e.course.title }}</strong>
+      <span class="badge bg-light text-dark mt-1">{{ e.get_status_display }}</span>
+      <a class="btn btn-coral btn-sm mt-2" href="{% url 'courses:detail' e.course.slug %}">مشاهده دوره</a>
+    </div></div>
+    {% empty %}<p class="text-muted">هنوز در دوره‌ای ثبت‌نام نکرده‌ای. <a href="{% url 'courses:list' %}">دیدن دوره‌ها</a></p>{% endfor %}
+  </div>
+  <a href="{% url 'lms:submissions' %}" class="btn btn-lavender mt-4">تکالیف من</a>
+</section>
+{% endblock %}

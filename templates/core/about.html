@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}درباره ما | هوش نو{% endblock %}
+{% block content %}
+<section class="container py-5">
+  <h1 class="section-title text-center mb-4">درباره آموزشگاه هوش نو</h1>
+  <div class="row justify-content-center"><div class="col-lg-8">
+    <p class="lead text-center">ما باور داریم هر نوجوان و جوانی می‌تواند آینده را بسازد؛ ما فقط مسیر را شاد و هیجان‌انگیز می‌کنیم! 🎈</p>
+    <p>{{ site_config.about_text|default:'از سال ۱۳۹۸ کنار نوجوانان و جوانان هستیم تا با برنامه‌نویسی، هوش مصنوعی و رباتیک، ایده‌هایشان را به واقعیت تبدیل کنند.' }}</p>
+    <div class="row g-3 mt-3 text-center">
+      <div class="col-4"><div class="stat-box lavender"><h3>+۸۰۰</h3><small>دانش‌آموز</small></div></div>
+      <div class="col-4"><div class="stat-box mint"><h3>+۲۰</h3><small>دوره تخصصی</small></div></div>
+      <div class="col-4"><div class="stat-box coral"><h3>+۱۵</h3><small>مدرس حرفه‌ای</small></div></div>
+    </div>
+  </div></div>
+</section>
+{% endblock %}
